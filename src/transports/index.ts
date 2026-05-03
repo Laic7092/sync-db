@@ -12,8 +12,17 @@ export async function resolveTransport(kind: TransportKind = "auto"): Promise<Tr
     return new WebSocketTransport();
   }
 
-  // auto: prefer WebSocket, fallback to HTTP
+  if (kind === "webrtc") {
+    const { WebRTCTransport } = await import("./webrtc.ts");
+    return new WebRTCTransport();
+  }
+
+  // auto: prefer WebSocket, then HTTP
   const env = detectEnv();
+  if (env.hasWebRTC) {
+    const { WebRTCTransport } = await import("./webrtc.ts");
+    return new WebRTCTransport();
+  }
   if (env.hasWebSocket) {
     const { WebSocketTransport } = await import("./ws.ts");
     return new WebSocketTransport();

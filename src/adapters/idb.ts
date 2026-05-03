@@ -11,11 +11,12 @@ export class IndexedDBAdapter implements DatabaseAdapter {
 
   async connect(databaseName: string): Promise<void> {
     this.dbName = databaseName;
-    this.db = await openDB(databaseName, 1, {
-      upgrade(_db) {
-        // stores are added via createCollection which bumps the version
-      },
-    });
+    this.db = await openDB(databaseName);
+
+    // register all existing object stores
+    for (const storeName of this.db.objectStoreNames) {
+      this.registered.add(storeName);
+    }
   }
 
   async disconnect(): Promise<void> {
@@ -33,12 +34,11 @@ export class IndexedDBAdapter implements DatabaseAdapter {
     if (this.registered.has(name)) return;
     this.registered.add(name);
 
-    // bump version to add the new object store
     const oldVersion = this.mustGetDB().version;
     this.mustGetDB().close();
 
     this.db = await openDB(this.dbName, oldVersion + 1, {
-      upgrade(db, _oldV, _newV, _tx) {
+      upgrade(db) {
         if (!db.objectStoreNames.contains(name)) {
           db.createObjectStore(name, { keyPath: "_id" });
         }
@@ -47,7 +47,9 @@ export class IndexedDBAdapter implements DatabaseAdapter {
   }
 
   async dropCollection(name: string): Promise<void> {
+    if (!this.registered.has(name)) return;
     this.registered.delete(name);
+
     const oldVersion = this.mustGetDB().version;
     this.mustGetDB().close();
 

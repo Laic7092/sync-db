@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sync-db — Todo Demo</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <h1>sync-db <span>Todo</span></h1>
+        <p class="subtitle">多后端 · 自动选择 · 插件系统 · 同步式数据库</p>
+      </header>
+      <section class="toolbar">
+        <div class="adapter-badge" id="adapter-badge"></div>
+        <button id="btn-clear" class="btn-ghost">清空已完成</button>
+      </section>
+      <form id="form-todo" class="todo-form">
+        <input type="text" id="input-todo" placeholder="添加新任务..." autofocus />
+        <button type="submit" id="btn-add">＋</button>
+      </form>
+      <nav class="filter-bar">
+        <button class="filter-btn active" data-filter="all">全部</button>
+        <button class="filter-btn" data-filter="active">未完成</button>
+        <button class="filter-btn" data-filter="completed">已完成</button>
+      </nav>
+      <ul id="todo-list" class="todo-list"></ul>
+      <footer class="status-bar">
+        <span id="status-count"></span>
+        <button id="btn-log" class="btn-ghost">日志</button>
+      </footer>
+      <div id="log-panel" class="log-panel hidden"></div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

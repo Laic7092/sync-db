@@ -14,4 +14,4 @@ export interface Transport {
   onDisconnect(handler: () => void): () => void;
 }
 
-export type TransportKind = "auto" | "ws" | "http";
+export type TransportKind = "auto" | "ws" | "http" | "webrtc";

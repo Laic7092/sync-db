@@ -1,11 +1,13 @@
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite-plus";
-import dts from "vite-plugin-dts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
+  staged: {
+    "*": "vp check --fix",
+  },
   build: {
     lib: {
       entry: resolve(__dirname, "src/index.ts"),
@@ -14,9 +16,8 @@ export default defineConfig({
       fileName: (format) => `sync-db.${format === "es" ? "mjs" : "cjs"}`,
     },
     rollupOptions: {
-      external: ["better-sqlite3"],
+      external: ["better-sqlite3", "ws"],
     },
   },
-  plugins: [dts({ insertTypesEntry: true, rollupTypes: true })],
   lint: { options: { typeAware: true, typeCheck: true } },
 });

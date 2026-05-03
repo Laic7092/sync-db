@@ -48,6 +48,7 @@ export class Collection<T extends Document = Document> {
   }
 
   async findById(id: string): Promise<(T & InternalDocument) | null> {
+    await this.adapter.createCollection(this.name);
     const doc = await this.adapter.findById(this.name, id);
     return doc as (T & InternalDocument) | null;
   }
@@ -96,6 +97,7 @@ export class Collection<T extends Document = Document> {
   }
 
   async updateById(id: string, changes: Partial<T>): Promise<T & InternalDocument> {
+    await this.adapter.createCollection(this.name);
     let finalChanges: Record<string, unknown> = { ...changes };
 
     finalChanges = await this.registry.runBeforeUpdate(this.name, id, finalChanges, this.makeCtx());
@@ -123,6 +125,7 @@ export class Collection<T extends Document = Document> {
   }
 
   async removeById(id: string): Promise<void> {
+    await this.adapter.createCollection(this.name);
     await this.registry.runBeforeRemove(this.name, id, this.makeCtx());
 
     await this.adapter.remove(this.name, id);
@@ -131,6 +134,7 @@ export class Collection<T extends Document = Document> {
   }
 
   async count(filter?: Filter<T>): Promise<number> {
+    await this.adapter.createCollection(this.name);
     return this.adapter.count(this.name, filter ?? {});
   }
 }

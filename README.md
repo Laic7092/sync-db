@@ -71,10 +71,10 @@ const db = createClient();
 
 打开数据库连接。`config` 可选：
 
-| 字段 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `adapter` | `"auto" \| "memory" \| "idb" \| "sqlite"` | `"auto"` | 数据库后端 |
-| `adapterOptions` | `Record<string, unknown>` | — | 传给适配器的额外选项 |
+| 字段             | 类型                                      | 默认值   | 说明                 |
+| ---------------- | ----------------------------------------- | -------- | -------------------- |
+| `adapter`        | `"auto" \| "memory" \| "idb" \| "sqlite"` | `"auto"` | 数据库后端           |
+| `adapterOptions` | `Record<string, unknown>`                 | —        | 传给适配器的额外选项 |
 
 ```ts
 // 自动选择
@@ -187,10 +187,7 @@ const first = await users.findOne({ name: "Alice" });
 按条件批量更新，返回受影响的文档数。
 
 ```ts
-const n = await users.update(
-  { age: { $lt: 18 } },
-  { verified: false },
-);
+const n = await users.update({ age: { $lt: 18 } }, { verified: false });
 // n = 3  （更新了 3 条）
 ```
 
@@ -231,20 +228,20 @@ const adultCount = await users.count({ age: { $gte: 18 } });
 
 ### 过滤器语法
 
-| 操作符 | 说明 | 示例 |
-|--------|------|------|
-| `$eq` | 等于（可省略，直接传值） | `{ age: 25 }` 等价于 `{ age: { $eq: 25 } }` |
-| `$ne` | 不等于 | `{ status: { $ne: "deleted" } }` |
-| `$gt` | 大于 | `{ score: { $gt: 80 } }` |
-| `$gte` | 大于等于 | `{ score: { $gte: 60 } }` |
-| `$lt` | 小于 | `{ price: { $lt: 100 } }` |
-| `$lte` | 小于等于 | `{ price: { $lte: 200 } }` |
-| `$in` | 在数组中 | `{ role: { $in: ["admin", "mod"] } }` |
-| `$nin` | 不在数组中 | `{ role: { $nin: ["banned"] } }` |
-| `$regex` | 正则匹配（字符串） | `{ email: { $regex: /@gmail\.com$/ } }` |
-| `$exists` | 字段存在与否 | `{ deletedAt: { $exists: false } }` |
-| `$and` | 逻辑与 | `{ $and: [{ a: 1 }, { b: 2 }] }` |
-| `$or` | 逻辑或 | `{ $or: [{ a: 1 }, { b: 2 }] }` |
+| 操作符    | 说明                     | 示例                                        |
+| --------- | ------------------------ | ------------------------------------------- |
+| `$eq`     | 等于（可省略，直接传值） | `{ age: 25 }` 等价于 `{ age: { $eq: 25 } }` |
+| `$ne`     | 不等于                   | `{ status: { $ne: "deleted" } }`            |
+| `$gt`     | 大于                     | `{ score: { $gt: 80 } }`                    |
+| `$gte`    | 大于等于                 | `{ score: { $gte: 60 } }`                   |
+| `$lt`     | 小于                     | `{ price: { $lt: 100 } }`                   |
+| `$lte`    | 小于等于                 | `{ price: { $lte: 200 } }`                  |
+| `$in`     | 在数组中                 | `{ role: { $in: ["admin", "mod"] } }`       |
+| `$nin`    | 不在数组中               | `{ role: { $nin: ["banned"] } }`            |
+| `$regex`  | 正则匹配（字符串）       | `{ email: { $regex: /@gmail\.com$/ } }`     |
+| `$exists` | 字段存在与否             | `{ deletedAt: { $exists: false } }`         |
+| `$and`    | 逻辑与                   | `{ $and: [{ a: 1 }, { b: 2 }] }`            |
+| `$or`     | 逻辑或                   | `{ $or: [{ a: 1 }, { b: 2 }] }`             |
 
 ---
 
@@ -252,12 +249,12 @@ const adultCount = await users.count({ age: { $gte: 18 } });
 
 每个插入的文档会自动带上以下字段：
 
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| `_id` | `string` | UUID 主键 |
-| `_createdAt` | `number` | 创建时间戳 (ms) |
-| `_updatedAt` | `number` | 最后更新时间戳 (ms) |
-| `_deleted` | `boolean?` | 软删除标记（供同步使用） |
+| 字段         | 类型       | 说明                     |
+| ------------ | ---------- | ------------------------ |
+| `_id`        | `string`   | UUID 主键                |
+| `_createdAt` | `number`   | 创建时间戳 (ms)          |
+| `_updatedAt` | `number`   | 最后更新时间戳 (ms)      |
+| `_deleted`   | `boolean?` | 软删除标记（供同步使用） |
 
 ---
 
@@ -265,13 +262,13 @@ const adultCount = await users.count({ age: { $gte: 18 } });
 
 #### 自动选择逻辑
 
-| 环境 | 检测条件 | 选择 |
-|------|----------|------|
-| 浏览器 | `indexedDB` 可用 | `idb` (IndexedDB) |
-| 浏览器 | `indexedDB` 不可用 | `memory` |
-| Node.js | `better-sqlite3` 可加载 | `sqlite` |
-| Node.js | `better-sqlite3` 不可加载 | `memory` |
-| 其他 | — | `memory` |
+| 环境    | 检测条件                  | 选择              |
+| ------- | ------------------------- | ----------------- |
+| 浏览器  | `indexedDB` 可用          | `idb` (IndexedDB) |
+| 浏览器  | `indexedDB` 不可用        | `memory`          |
+| Node.js | `better-sqlite3` 可加载   | `sqlite`          |
+| Node.js | `better-sqlite3` 不可加载 | `memory`          |
+| 其他    | —                         | `memory`          |
 
 #### 显式指定
 
@@ -350,10 +347,10 @@ await db.pull("users");
 
 #### 传输方式
 
-| 传输 | 特点 | 适用场景 |
-|------|------|----------|
-| `WebSocketTransport` | 双向实时、自动重连 | 实时协作、在线游戏 |
-| `HTTPTransport` | 请求/响应、长轮询 | 防火墙友好、无状态后端 |
+| 传输                 | 特点               | 适用场景               |
+| -------------------- | ------------------ | ---------------------- |
+| `WebSocketTransport` | 双向实时、自动重连 | 实时协作、在线游戏     |
+| `HTTPTransport`      | 请求/响应、长轮询  | 防火墙友好、无状态后端 |
 
 #### 同步协议
 
@@ -401,11 +398,13 @@ wss.on("connection", (ws) => {
         // 返回 since 之后变更的文档
         const col = store.get(msg.collection) ?? [];
         const docs = col.filter((d: any) => d._updatedAt > msg.since);
-        ws.send(JSON.stringify({
-          type: "pull-response",
-          collection: msg.collection,
-          documents: docs,
-        }));
+        ws.send(
+          JSON.stringify({
+            type: "pull-response",
+            collection: msg.collection,
+            documents: docs,
+          }),
+        );
         break;
       }
     }
@@ -468,18 +467,18 @@ db.use(new ValidationPlugin());
 
 #### 可用的生命周期钩子
 
-| 钩子 | 签名 | 说明 |
-|------|------|------|
-| `onRegister` | `(client: PluginClient) => void` | 注册时调用 |
-| `onUnregister` | `() => void` | 卸载时调用 |
-| `beforeInsert` | `(col, doc, ctx) => doc` | 插入前；可修改文档 |
-| `afterInsert` | `(col, doc, ctx) => void` | 插入后；不可撤销 |
-| `beforeUpdate` | `(col, id, changes, ctx) => changes` | 更新前；可修改变更 |
-| `afterUpdate` | `(col, doc, ctx) => void` | 更新后 |
-| `beforeRemove` | `(col, id, ctx) => void` | 删除前；可阻止 |
-| `afterRemove` | `(col, id, ctx) => void` | 删除后 |
-| `beforeFind` | `(col, query, ctx) => query` | 查询前；可修改查询条件 |
-| `afterFind` | `(col, docs, ctx) => docs` | 查询后；可修改结果 |
+| 钩子           | 签名                                 | 说明                   |
+| -------------- | ------------------------------------ | ---------------------- |
+| `onRegister`   | `(client: PluginClient) => void`     | 注册时调用             |
+| `onUnregister` | `() => void`                         | 卸载时调用             |
+| `beforeInsert` | `(col, doc, ctx) => doc`             | 插入前；可修改文档     |
+| `afterInsert`  | `(col, doc, ctx) => void`            | 插入后；不可撤销       |
+| `beforeUpdate` | `(col, id, changes, ctx) => changes` | 更新前；可修改变更     |
+| `afterUpdate`  | `(col, doc, ctx) => void`            | 更新后                 |
+| `beforeRemove` | `(col, id, ctx) => void`             | 删除前；可阻止         |
+| `afterRemove`  | `(col, id, ctx) => void`             | 删除后                 |
+| `beforeFind`   | `(col, query, ctx) => query`         | 查询前；可修改查询条件 |
+| `afterFind`    | `(col, docs, ctx) => docs`           | 查询后；可修改结果     |
 
 `before*` 钩子采用链式变换模式：每个插件的返回值作为下一个插件的输入。任意钩子抛出异常都会中止操作。钩子可以是同步或 async。
 
@@ -487,8 +486,8 @@ db.use(new ValidationPlugin());
 
 ```ts
 interface HookContext {
-  client: PluginClient;  // 插件可见的客户端引用
-  timestamp: number;     // 当前时间戳
+  client: PluginClient; // 插件可见的客户端引用
+  timestamp: number; // 当前时间戳
 }
 ```
 
@@ -566,18 +565,42 @@ import type { DatabaseAdapter, InternalDocument } from "sync-db";
 class MyAdapter implements DatabaseAdapter {
   name = "my-adapter";
 
-  async connect(name: string) { /* 初始化连接 */ }
-  async disconnect() { /* 清理 */ }
-  async createCollection(name: string) { /* 创建集合 */ }
-  async dropCollection(name: string) { /* 删除集合 */ }
-  async listCollections() { return []; }
-  async insert(col: string, doc: InternalDocument) { return doc; }
-  async findById(col: string, id: string) { return null; }
-  async find(col: string, query: any) { return []; }
-  async update(col: string, id: string, changes: any) { return {} as any; }
-  async remove(col: string, id: string) { /* ... */ }
-  async removeMany(col: string, ids: string[]) { return 0; }
-  async count(col: string, filter: any) { return 0; }
+  async connect(name: string) {
+    /* 初始化连接 */
+  }
+  async disconnect() {
+    /* 清理 */
+  }
+  async createCollection(name: string) {
+    /* 创建集合 */
+  }
+  async dropCollection(name: string) {
+    /* 删除集合 */
+  }
+  async listCollections() {
+    return [];
+  }
+  async insert(col: string, doc: InternalDocument) {
+    return doc;
+  }
+  async findById(col: string, id: string) {
+    return null;
+  }
+  async find(col: string, query: any) {
+    return [];
+  }
+  async update(col: string, id: string, changes: any) {
+    return {} as any;
+  }
+  async remove(col: string, id: string) {
+    /* ... */
+  }
+  async removeMany(col: string, ids: string[]) {
+    return 0;
+  }
+  async count(col: string, filter: any) {
+    return 0;
+  }
 }
 ```
 
@@ -592,13 +615,25 @@ class MyTransport implements Transport {
   name = "my-transport";
   connected = false;
 
-  async connect(url: string) { this.connected = true; }
-  async disconnect() { this.connected = false; }
-  async send(msg: SyncMessage) { /* 发送 */ }
+  async connect(url: string) {
+    this.connected = true;
+  }
+  async disconnect() {
+    this.connected = false;
+  }
+  async send(msg: SyncMessage) {
+    /* 发送 */
+  }
 
-  onMessage(h: (msg: SyncMessage) => void) { return () => {}; }
-  onConnect(h: () => void) { return () => {}; }
-  onDisconnect(h: () => void) { return () => {}; }
+  onMessage(h: (msg: SyncMessage) => void) {
+    return () => {};
+  }
+  onConnect(h: () => void) {
+    return () => {};
+  }
+  onDisconnect(h: () => void) {
+    return () => {};
+  }
 }
 ```
 
